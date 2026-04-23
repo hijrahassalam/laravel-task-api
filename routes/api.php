@@ -5,9 +5,17 @@ use App\Http\Controllers\Api\TaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
-    // Public routes
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
+    // Health check
+    Route::get('/health', fn () => response()->json([
+        'status' => 'ok',
+        'timestamp' => now()->toIso8601String(),
+    ]));
+
+    // Auth routes (rate limited: 5 req/min)
+    Route::middleware(['throttle:auth'])->group(function () {
+        Route::post('/register', [AuthController::class, 'register']);
+        Route::post('/login', [AuthController::class, 'login']);
+    });
 
     // Protected routes
     Route::middleware('auth:sanctum')->group(function () {

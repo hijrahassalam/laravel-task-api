@@ -1,0 +1,25 @@
+meta {
+  name: Health Check
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/health
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("should return 200 status", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return ok status", function() {
+    expect(res.body.status).to.equal("ok");
+    expect(res.body.timestamp).to.exist;
+  });
+}
