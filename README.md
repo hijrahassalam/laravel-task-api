@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/hijrahassalam/laravel-task-api/actions/workflows/tests.yml/badge.svg)
 
-A production-ready REST API built with Laravel 13, featuring token auth,
+A production-ready REST API built with Laravel 13, featuring token authentication,
 role-based access control, task management with audit trail, and full test coverage.
 
 ## Tech Stack
@@ -16,8 +16,9 @@ Laravel 13 · PHP 8.4 · MySQL · PHPUnit · Sanctum · Docker · GitHub Actions
 - Advanced filtering, sorting, and search
 - Batch operations
 - Request validation & API Resources
+- Swagger/OpenAPI documentation
 - Dockerised local environment
-- CI: automated tests on every push
+- CI: automated tests on every push (36 tests)
 
 ## Quick Start
 
@@ -32,6 +33,15 @@ docker-compose exec app php artisan migrate --seed
 ```
 
 API available at `http://localhost:8000`
+
+## Seed Accounts
+
+| Email | Password | Role |
+|-------|----------|------|
+| admin@example.com | password | admin |
+| john@example.com | password | member |
+| jane@example.com | password | member |
+| bob@example.com | password | member |
 
 ## Running Tests
 
@@ -51,17 +61,17 @@ vendor/bin/phpunit
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
+| GET | /api/v1/health | No | Health check |
 | POST | /api/v1/register | No | Register |
 | POST | /api/v1/login | No | Login |
 | POST | /api/v1/logout | Yes | Logout |
 | GET | /api/v1/me | Yes | Current user |
-| GET | /api/v1/health | No | Health check |
 | GET | /api/v1/tasks | Yes | List (filter, sort, search) |
 | POST | /api/v1/tasks | Yes | Create task |
 | GET | /api/v1/tasks/{id} | Yes | Get single task |
 | PUT | /api/v1/tasks/{id} | Yes | Update task |
 | DELETE | /api/v1/tasks/{id} | Yes | Soft delete |
-| PATCH | /api/v1/tasks/{id}/status | Yes | Update status |
+| POST | /api/v1/tasks/{id}/assign | Yes | Assign task (admin) |
 | PATCH | /api/v1/tasks/batch-status | Yes | Batch update status |
 | GET | /api/v1/tasks/{id}/activity | Yes | Activity log |
 
@@ -76,7 +86,8 @@ Import the collection folder `bruno-collection/` into Bruno:
 1. Open Bruno
 2. Click "Open Collection"
 3. Select the `bruno-collection` folder
-4. Set environment variable `token` after login
+4. Set environment `local`
+5. Login first to get token, then set `token` variable
 
 ## Filter & Sort Examples
 
