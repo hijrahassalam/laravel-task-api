@@ -1,0 +1,37 @@
+meta {
+  name: Batch Update Status
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{base_url}}/api/v1/tasks/batch-status
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "ids": [1, 2, 3],
+    "status": "done"
+  }
+}
+
+tests {
+  test("should return 200 status", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return success message", function() {
+    expect(res.body.message).to.equal("Tasks updated successfully.");
+  });
+}

@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\ActivityLogResource;
 use App\Http\Resources\TaskResource;
+use App\Models\ActivityLog;
 use App\Models\Task;
 use App\Services\TaskService;
 use Illuminate\Http\JsonResponse;
@@ -207,6 +208,78 @@ class TaskController extends Controller
 
         return response()->json([
             'data' => new TaskResource($task),
+        ]);
+    }
+
+    #[OA\Patch(
+        path: '/api/v1/tasks/batch-status',
+        summary: 'Batch update task status',
+        tags: ['Tasks'],
+        security: [['bearerAuth' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['ids', 'status'],
+                properties: [
+                    new OA\Property(property: 'ids', type: 'array', items: new OA\Items(type: 'integer'), example: [1, 2, 3]),
+                    new OA\Property(property: 'status', type: 'string', enum: ['pending', 'in_progress', 'done']),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Tasks updated successfully'),
+        ]
+    )]
+    public function batchStatus(Request $request): JsonResponse
+    {
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:tasks,id'],
+            'status' => ['required', 'in:pending,in_progress,done'],
+        ]);
+
+        $tasks = Task::whereIn('id', $request->ids)->get();
+
+        foreach ($tasks as $task) {
+            if ($request->user()->isAdmin() || $task->user_id === $request->user()->id) {
+                $oldStatus = $task->status;
+                $task->update(['status' => $request->status]);
+
+                ActivityLog::create([
+                    'task_id' => $task->id,
+                    'user_id' => $request->user()->id,
+                    'action' => 'status_changed',
+                    'old_values' => ['status' => $oldStatus],
+                    'new_values' => ['status' => $request->status],
+                ]);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Tasks updated successfully.',
+        ]);
+    }
+
+    #[OA\Get(
+        path: '/api/v1/tasks/{id}/activity',
+        summary: 'Get task activity log',
+        tags: ['Tasks'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Activity log'),
+        ]
+    )]
+    public function activity(Task $task): JsonResponse
+    {
+        $this->authorize('view', $task);
+
+        $logs = $task->activityLogs()->with('user')->latest()->get();
+
+        return response()->json([
+            'data' => ActivityLogResource::collection($logs),
         ]);
     }
 }

@@ -1,0 +1,28 @@
+meta {
+  name: Get Activity Log
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{base_url}}/api/v1/tasks/{{task_id}}/activity
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("should return 200 status", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return activity logs", function() {
+    expect(res.body.data).to.exist;
+  });
+}

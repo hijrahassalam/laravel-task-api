@@ -15,7 +15,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
 
         // Tasks
+        Route::patch('/tasks/batch-status', [TaskController::class, 'batchStatus']);
         Route::apiResource('tasks', TaskController::class);
         Route::post('/tasks/{task}/assign', [TaskController::class, 'assign']);
+        Route::get('/tasks/{task}/activity', [TaskController::class, 'activity']);
     });
 });
