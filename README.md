@@ -20,6 +20,14 @@ Laravel 13 · PHP 8.4 · MySQL · PHPUnit · Sanctum · Docker · GitHub Actions
 - Dockerised local environment
 - CI: automated tests on every push (36 tests)
 
+## Screenshots
+
+### Swagger API Documentation
+![Swagger](docs/swagger.png)
+
+### Test Results
+![Tests](docs/tests.png)
+
 ## Quick Start
 
 ```bash
