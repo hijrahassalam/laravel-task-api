@@ -99,7 +99,7 @@ class TaskCrudTest extends TestCase
         $this->assertSoftDeleted('tasks', ['id' => $task->id]);
     }
 
-    public function test_user_can_view_other_users_task(): void
+    public function test_user_cannot_view_other_users_task(): void
     {
         $otherUser = User::factory()->create(['role' => 'member']);
         $task = Task::factory()->create(['user_id' => $otherUser->id]);
@@ -107,8 +107,7 @@ class TaskCrudTest extends TestCase
         $response = $this->actingAs($this->user)
             ->getJson("/api/v1/tasks/{$task->id}");
 
-        // Authorization will be added in Step 5
-        $response->assertOk();
+        $response->assertStatus(403);
     }
 
     public function test_task_creation_requires_title(): void
