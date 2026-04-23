@@ -1,0 +1,29 @@
+meta {
+  name: Get Task
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/tasks/{{task_id}}
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("should return 200 status", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return task details", function() {
+    expect(res.body.data).to.exist;
+    expect(res.body.data.id).to.exist;
+  });
+}

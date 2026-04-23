@@ -1,0 +1,43 @@
+meta {
+  name: Create Task
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/api/v1/tasks
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "New Task",
+    "description": "Task description here",
+    "priority": "high",
+    "due_date": "2026-12-31",
+    "tags": ["backend", "urgent"],
+    "assigned_to": null
+  }
+}
+
+tests {
+  test("should return 201 status", function() {
+    expect(res.status).to.equal(201);
+  });
+
+  test("should return created task", function() {
+    expect(res.body.data).to.exist;
+    expect(res.body.data.id).to.exist;
+    expect(res.body.data.title).to.equal("New Task");
+  });
+}

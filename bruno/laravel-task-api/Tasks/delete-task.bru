@@ -1,0 +1,28 @@
+meta {
+  name: Delete Task
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/api/v1/tasks/{{task_id}}
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("should return 200 status", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return success message", function() {
+    expect(res.body.message).to.equal("Task deleted successfully.");
+  });
+}
