@@ -1,0 +1,37 @@
+meta {
+  name: Assign Task
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/api/v1/tasks/{{task_id}}/assign
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "user_id": 2
+  }
+}
+
+tests {
+  test("should return 200 status", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return task with assignee", function() {
+    expect(res.body.data).to.exist;
+    expect(res.body.data.assignee).to.exist;
+  });
+}

@@ -101,6 +101,8 @@ class TaskController extends Controller
     )]
     public function show(Task $task): JsonResponse
     {
+        $this->authorize('view', $task);
+
         $task->load(['user', 'assignee']);
 
         return response()->json([
@@ -136,6 +138,8 @@ class TaskController extends Controller
     )]
     public function update(UpdateTaskRequest $request, Task $task): JsonResponse
     {
+        $this->authorize('update', $task);
+
         $task = $this->taskService->update($task, $request->validated(), $request->user());
 
         return response()->json([
@@ -158,10 +162,51 @@ class TaskController extends Controller
     )]
     public function destroy(Request $request, Task $task): JsonResponse
     {
+        $this->authorize('delete', $task);
+
         $this->taskService->delete($task, $request->user());
 
         return response()->json([
             'message' => 'Task deleted successfully.',
+        ]);
+    }
+
+    #[OA\Post(
+        path: '/api/v1/tasks/{id}/assign',
+        summary: 'Assign task to a user (admin only)',
+        tags: ['Tasks'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['user_id'],
+                properties: [
+                    new OA\Property(property: 'user_id', type: 'integer', nullable: true, example: 2),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Task assigned successfully'),
+            new OA\Response(response: 403, description: 'Unauthorized'),
+        ]
+    )]
+    public function assign(Request $request, Task $task): JsonResponse
+    {
+        $this->authorize('assign', $task);
+
+        $request->validate([
+            'user_id' => ['nullable', 'exists:users,id'],
+        ]);
+
+        $task->update(['assigned_to' => $request->user_id]);
+
+        $task->load(['user', 'assignee']);
+
+        return response()->json([
+            'data' => new TaskResource($task),
         ]);
     }
 }

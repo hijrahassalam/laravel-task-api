@@ -16,5 +16,6 @@ Route::prefix('v1')->group(function () {
 
         // Tasks
         Route::apiResource('tasks', TaskController::class);
+        Route::post('/tasks/{task}/assign', [TaskController::class, 'assign']);
     });
 });
