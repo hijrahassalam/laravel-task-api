@@ -31,4 +31,8 @@ tests {
     expect(res.body.user).to.exist;
     expect(res.body.token).to.exist;
   });
+
+  test("should set token variable", function() {
+    bru.setVar("token", res.body.token);
+  });
 }

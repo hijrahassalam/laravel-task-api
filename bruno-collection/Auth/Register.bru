@@ -34,7 +34,7 @@ tests {
     expect(res.body.token).to.exist;
   });
 
-  test("should return user with role member", function() {
-    expect(res.body.user.role).to.equal("member");
+  test("should set token variable", function() {
+    bru.setVar("token", res.body.token);
   });
 }

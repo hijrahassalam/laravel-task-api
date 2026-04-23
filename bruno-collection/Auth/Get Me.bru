@@ -1,11 +1,11 @@
 meta {
-  name: List Tasks
+  name: Get Me
   type: http
-  seq: 1
+  seq: 3
 }
 
 get {
-  url: {{base_url}}/api/v1/tasks
+  url: {{base_url}}/api/v1/me
   auth: bearer
 }
 
@@ -22,8 +22,9 @@ tests {
     expect(res.status).to.equal(200);
   });
 
-  test("should return paginated tasks", function() {
-    expect(res.body.data).to.exist;
-    expect(res.body.meta).to.exist;
+  test("should return user object", function() {
+    expect(res.body.user).to.exist;
+    expect(res.body.user.id).to.exist;
+    expect(res.body.user.email).to.exist;
   });
 }

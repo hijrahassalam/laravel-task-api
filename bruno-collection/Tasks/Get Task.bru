@@ -25,5 +25,8 @@ tests {
   test("should return task details", function() {
     expect(res.body.data).to.exist;
     expect(res.body.data.id).to.exist;
+    expect(res.body.data.title).to.exist;
+    expect(res.body.data.status).to.exist;
+    expect(res.body.data.priority).to.exist;
   });
 }

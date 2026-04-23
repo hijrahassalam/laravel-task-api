@@ -65,6 +65,19 @@ vendor/bin/phpunit
 | PATCH | /api/v1/tasks/batch-status | Yes | Batch update status |
 | GET | /api/v1/tasks/{id}/activity | Yes | Activity log |
 
+## API Documentation
+
+Swagger UI: `http://localhost:8000/api/documentation`
+
+## Bruno Collection
+
+Import the collection folder `bruno-collection/` into Bruno:
+
+1. Open Bruno
+2. Click "Open Collection"
+3. Select the `bruno-collection` folder
+4. Set environment variable `token` after login
+
 ## Filter & Sort Examples
 
 ```

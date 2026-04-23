@@ -1,0 +1,31 @@
+meta {
+  name: List Tasks
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/tasks?status=&priority=&search=&sort=
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("should return 200 status", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("should return paginated tasks", function() {
+    expect(res.body.data).to.exist;
+    expect(res.body.meta).to.exist;
+    expect(res.body.meta.current_page).to.exist;
+    expect(res.body.meta.total).to.exist;
+  });
+}

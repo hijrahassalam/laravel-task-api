@@ -24,6 +24,7 @@ body:json {
     "title": "New Task",
     "description": "Task description here",
     "priority": "high",
+    "status": "pending",
     "due_date": "2026-12-31",
     "tags": ["backend", "urgent"],
     "assigned_to": null
@@ -39,5 +40,9 @@ tests {
     expect(res.body.data).to.exist;
     expect(res.body.data.id).to.exist;
     expect(res.body.data.title).to.equal("New Task");
+  });
+
+  test("should set task_id variable", function() {
+    bru.setVar("task_id", res.body.data.id);
   });
 }
